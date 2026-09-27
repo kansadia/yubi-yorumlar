@@ -35,7 +35,7 @@ def get_bytes(url):
         return r.read()
 
 
-def get(url, retries=3):
+def get(url, retries=4):
     for i in range(retries):
         try:
             req = urllib.request.Request(url, headers=HEADERS)
@@ -45,6 +45,9 @@ def get(url, retries=3):
             if e.code in (404,):
                 return None
             err = e
+            if e.code == 429:
+                time.sleep(30 * (i + 1))
+                continue
         except Exception as e:  # noqa
             err = e
         time.sleep(2 + i * 3)
@@ -117,29 +120,39 @@ def main():
         sys.exit(1)
 
     for cid, slug in products.items():
-        if cid not in pmap or not pmap[cid].get("code"):
-            pmap[cid] = {"slug": slug, "code": product_code(cid, slug)}
-            time.sleep(0.4)
-        else:
-            pmap[cid]["slug"] = slug
+        pmap.setdefault(cid, {"code": None})["slug"] = slug
 
     by_sku = {}
-    for cid in products:
-        code = pmap[cid].get("code")
-        if not code:
+    failed = 0
+    for cid, slug in products.items():
+        try:
+            summary, reviews = fetch_reviews(cid)
+        except Exception as e:  # noqa
+            print(f"Yorum cekilemedi: {cid} ({e})")
+            failed += 1
             continue
-        summary, reviews = fetch_reviews(cid)
-        time.sleep(0.3)
+        time.sleep(0.4)
         if not summary.get("totalRatingCount"):
+            continue
+        good = [r for r in reviews
+                if (r.get("rate") or 0) >= MIN_RATE and (r.get("comment") or "").strip()
+                and "trendyol" not in (r.get("comment") or "").lower()]
+        code = pmap[cid].get("code")
+        if not code and good:
+            try:
+                code = product_code(cid, slug)
+                pmap[cid]["code"] = code
+            except Exception as e:  # noqa
+                print(f"Urun kodu alinamadi: {cid} ({e})")
+            time.sleep(1.5)
+        if not code:
             continue
         b = by_sku.setdefault(code, {"sum": 0.0, "ratings": 0, "reviews": []})
         n = summary.get("totalRatingCount") or 0
         b["sum"] += (summary.get("averageRating") or 0) * n
         b["ratings"] += n
-        for r in reviews:
-            text = (r.get("comment") or "").strip()
-            if (r.get("rate") or 0) < MIN_RATE or not text:
-                continue
+        for r in good:
+            text = r["comment"].strip()
             imgs = []
             media = [m for m in (r.get("mediaFiles") or []) if m.get("mediaType") == "IMAGE" and m.get("url")]
             for k, m in enumerate(media[:4], 1):
@@ -154,16 +167,18 @@ def main():
                         print(f"Gorsel indirilemedi: {fn} ({e})")
                         continue
                 imgs.append(fn)
-            if "trendyol" in text.lower():
-                continue
-            name = initials(r.get("userFullName") or "")
             b["reviews"].append({
-                "n": name,
+                "n": initials(r.get("userFullName") or ""),
                 "r": r.get("rate"),
                 "t": text,
                 "d": r.get("createdAt"),
                 "i": imgs,
             })
+
+    print(f"Yorum cekme hatasi: {failed}/{len(products)}")
+    if failed > len(products) * 0.2 or not by_sku:
+        print("HATA: Cok fazla hata - mevcut veriler korunuyor, hicbir sey yazilmadi.")
+        sys.exit(1)
 
     now = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     index = {}
