@@ -1,4 +1,4 @@
-/* Yubi Design - musteri yorumlari kutusu (v4) */
+/* Yubi Design - musteri yorumlari kutusu (v5) */
 (function () {
   if (window.__yubiReviews) return;
   window.__yubiReviews = true;
@@ -124,7 +124,29 @@
       box.appendChild(btn);
     }
     if (hasText) more();
-    anchor.parentNode.insertBefore(box, anchor.nextSibling);
+    place(box, anchor);
+  }
+
+  /* Siralama: ... > site yorumlari > bizim yorumlar > iade ve kisisellestirme bilgisi */
+  function place(box, anchor) {
+    var main = document.querySelector("main");
+    var kids = main ? [].slice.call(main.children) : [];
+    var iade = null, site = null;
+    kids.forEach(function (c) {
+      var t = (c.innerText || "").trim();
+      if (!iade && /^İade ve kişiselleştirme bilgisi/i.test(t)) iade = c;
+      if (!site && c !== iade && c.querySelector(".infinite-scroll-component") &&
+          !c.querySelector('[class*="style_productContainer__"]')) site = c;
+    });
+    if (!iade) { anchor.parentNode.insertBefore(box, anchor.nextSibling); return; }
+    main.insertBefore(box, iade);
+    kids = [].slice.call(main.children);
+    main.style.display = "flex";
+    main.style.flexDirection = "column";
+    kids.forEach(function (c, i) { c.style.order = String(i * 10); });
+    var io = kids.indexOf(iade) * 10;
+    box.style.order = String(io - 1);
+    if (site) site.style.order = String(io - 2);
   }
 
   function run(tries) {
@@ -150,11 +172,20 @@
     });
   }
 
+  function resetOrder() {
+    var main = document.querySelector("main");
+    if (!main || main.style.display !== "flex") return;
+    main.style.display = "";
+    main.style.flexDirection = "";
+    [].forEach.call(main.children, function (c) { c.style.order = ""; });
+  }
+
   function tick() {
     if (location.pathname !== lastPath) {
       lastPath = location.pathname;
       var old = document.getElementById("yubi-reviews");
       if (old) old.remove();
+      resetOrder();
       setTimeout(run, 400);
     }
   }
