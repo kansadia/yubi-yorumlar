@@ -1,4 +1,4 @@
-/* Yubi Design - musteri yorumlari kutusu (v5) */
+/* Yubi Design - musteri yorumlari kutusu (v6) */
 (function () {
   if (window.__yubiReviews) return;
   window.__yubiReviews = true;
@@ -127,7 +127,7 @@
     place(box, anchor);
   }
 
-  /* Siralama: ... > site yorumlari > bizim yorumlar > iade ve kisisellestirme bilgisi */
+  /* Siralama: ... > bizim yorumlar > site yorumlari > iade ve kisisellestirme bilgisi */
   function place(box, anchor) {
     var main = document.querySelector("main");
     var kids = main ? [].slice.call(main.children) : [];
@@ -145,8 +145,8 @@
     main.style.flexDirection = "column";
     kids.forEach(function (c, i) { c.style.order = String(i * 10); });
     var io = kids.indexOf(iade) * 10;
-    box.style.order = String(io - 1);
-    if (site) site.style.order = String(io - 2);
+    box.style.order = String(io - 2);
+    if (site) site.style.order = String(io - 1);
   }
 
   function run(tries) {
