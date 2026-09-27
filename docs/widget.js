@@ -1,4 +1,4 @@
-/* Yubi Design - musteri yorumlari kutusu (v6) */
+/* Yubi Design - musteri yorumlari kutusu (v7) */
 (function () {
   if (window.__yubiReviews) return;
   window.__yubiReviews = true;
@@ -189,6 +189,23 @@
       setTimeout(run, 400);
     }
   }
-  setInterval(tick, 700);
+  /* Sitede hic yorum yoksa "Yorum bulunamadi" bolumunu gizle; yorum gelirse tekrar goster */
+  function syncEmptySiteReviews() {
+    var main = document.querySelector("main");
+    if (!main) return;
+    [].forEach.call(main.children, function (c) {
+      if (!c.querySelector(".infinite-scroll-component")) return;
+      var empty = /^Yorum bulunamad[ıi]\.?$/i.test((c.textContent || "").trim());
+      if (empty && !c.hasAttribute("data-yrv-hidden")) {
+        c.setAttribute("data-yrv-hidden", "1");
+        c.style.display = "none";
+      } else if (!empty && c.hasAttribute("data-yrv-hidden")) {
+        c.removeAttribute("data-yrv-hidden");
+        c.style.display = "";
+      }
+    });
+  }
+
+  setInterval(function () { tick(); syncEmptySiteReviews(); }, 700);
   tick();
 })();
