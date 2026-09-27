@@ -1,4 +1,4 @@
-/* Yubi Design - musteri yorumlari kutusu (v3) */
+/* Yubi Design - musteri yorumlari kutusu (v4) */
 (function () {
   if (window.__yubiReviews) return;
   window.__yubiReviews = true;
@@ -96,16 +96,17 @@
   function render(data, anchor) {
     var old = document.getElementById("yubi-reviews");
     if (old) old.remove();
-    if (!data || !data.reviews || !data.reviews.length) return;
+    if (!data || !data.ratings) return;
+    var hasText = data.reviews && data.reviews.length > 0;
     css();
     var box = document.createElement("section");
     box.id = "yubi-reviews";
     box.className = "yrv";
-    box.innerHTML = '<h2>Müşteri Yorumları</h2><div class="yrv-sum">' +
+    box.innerHTML = '<h2>' + (hasText ? 'Müşteri Yorumları' : 'Müşteri Değerlendirmeleri') + '</h2><div class="yrv-sum">' +
       (data.avg ? '<span class="yrv-avg">' + Number(data.avg).toFixed(1).replace(".", ",") + '</span><span class="yrv-st">' + stars(data.avg) + '</span>' : "") +
-      '<span>' + data.ratings + ' değerlendirme · ' + data.reviews.length + ' yorum</span>' +
+      '<span>' + data.ratings + ' değerlendirme' + (hasText ? ' · ' + data.reviews.length + ' yorum' : '') + '</span>' +
       '</div>' +
-      '<div class="yrv-grid"></div>';
+      (hasText ? '<div class="yrv-grid"></div>' : '');
     var grid = box.querySelector(".yrv-grid");
     var shown = 0;
     function more() {
@@ -122,7 +123,7 @@
       btn.onclick = more;
       box.appendChild(btn);
     }
-    more();
+    if (hasText) more();
     anchor.parentNode.insertBefore(box, anchor.nextSibling);
   }
 
