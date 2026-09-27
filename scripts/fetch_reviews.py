@@ -138,7 +138,7 @@ def main():
                 if (r.get("rate") or 0) >= MIN_RATE and (r.get("comment") or "").strip()
                 and "trendyol" not in (r.get("comment") or "").lower()]
         code = pmap[cid].get("code")
-        if not code and good:
+        if not code:
             try:
                 code = product_code(cid, slug)
                 pmap[cid]["code"] = code
