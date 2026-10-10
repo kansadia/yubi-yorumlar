@@ -1,0 +1,43 @@
+name: Erisim testi
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Trendyol erisim testi
+        run: |
+          python3 - <<'PY'
+          import urllib.request, urllib.error
+          H = {
+              "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0 Safari/537.36",
+              "Accept-Language": "tr-TR,tr;q=0.9",
+              "Cookie": "storefrontId=1; countryCode=TR; language=tr; platform=web",
+              "Origin": "https://www.trendyol.com",
+              "Referer": "https://www.trendyol.com/",
+          }
+          tests = {
+              "yorum_api": "https://apigw.trendyol.com/discovery-storefront-trproductgw-service/api/review-read/product-reviews/detailed?channelId=1&merchantId=576987&contentId=768875745&page=0&pageSize=50&order=DESC&orderBy=Score",
+              "arama_sayfasi": "https://www.trendyol.com/sr?mid=576987&os=1&pi=1",
+              "urun_sayfasi": "https://www.trendyol.com/yubi-design/itachi-naruto-isik-kutusu-golge-kutusu-anime-light-box-p-768875745",
+              "gorsel_cdn": "https://cdn.dsmcdn.com/mnresize/-/820/prod-product-review-media_1768435207133/img/2019922/2023910/2041856/1113649003/12419696-1776878155275.jpeg",
+          }
+          for name, url in tests.items():
+              try:
+                  req = urllib.request.Request(url, headers=H)
+                  with urllib.request.urlopen(req, timeout=30) as r:
+                      body = r.read()
+                      extra = ""
+                      if name == "yorum_api":
+                          import json
+                          d = json.loads(body)
+                          extra = f" yorum={len(d['result'].get('reviews') or [])} toplamPuan={d['result']['summary'].get('totalRatingCount')}"
+                      print(f"{name}: {r.status} OK bytes={len(body)}{extra}")
+              except urllib.error.HTTPError as e:
+                  print(f"{name}: HTTP {e.code} {e.reason}")
+              except Exception as e:
+                  print(f"{name}: HATA {e}")
+          PY
