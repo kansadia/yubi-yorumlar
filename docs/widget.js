@@ -1,4 +1,4 @@
-/* Yubi Design - musteri yorumlari kutusu (v7) */
+/* Yubi Design - musteri yorumlari kutusu (v8 - Serel/Studio + Siva uyumlu) */
 (function () {
   if (window.__yubiReviews) return;
   window.__yubiReviews = true;
@@ -14,7 +14,7 @@
     var s = document.createElement("style");
     s.id = "yubi-rv-css";
     s.textContent =
-      ".yrv{max-width:1200px;margin:48px auto 32px;padding:0 16px;font-family:inherit;color:#0e1417}" +
+      ".yrv{max-width:1200px;margin:48px auto 32px;padding:0 16px;font-family:inherit;color:#0e1417;box-sizing:border-box}" +
       ".yrv h2{font-size:22px;font-weight:600;margin:0 0 6px}" +
       ".yrv-sum{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:14px;color:#555;margin-bottom:20px}" +
       ".yrv-avg{font-size:28px;font-weight:700;color:#0e1417}" +
@@ -28,7 +28,8 @@
       ".yrv-imgs a{display:block;width:64px;height:64px;border-radius:2px;overflow:hidden;background:#f3f3f3}" +
       ".yrv-imgs img{width:100%;height:100%;object-fit:cover}" +
       ".yrv-more{display:block;margin:18px auto 0;background:#0e1417;color:#fff;border:0;border-radius:2px;padding:11px 26px;font:inherit;font-size:14px;cursor:pointer}" +
-      "@media(max-width:600px){.yrv{margin-top:32px}.yrv-grid{grid-template-columns:1fr}}";
+      ".yrv-serel{max-width:1500px;padding:0 24px}.yrv-serel h2{font-size:30px;font-weight:500;margin-bottom:10px}" +
+      "@media(max-width:600px){.yrv{margin-top:32px}.yrv-grid{grid-template-columns:1fr}.yrv-serel h2{font-size:22px}}";
     document.head.appendChild(s);
   }
 
@@ -54,7 +55,12 @@
     catch (e) { return ""; }
   }
 
-  function getSkus() {
+  /* Studio (Serel): window.__IKAS_DATA__ ; Siva: next.router pageProps */
+  function pageProps() {
+    try {
+      var d = window.__IKAS_DATA__;
+      if (d && d.pageType) return d;
+    } catch (e) {}
     try {
       var r = window.next && window.next.router;
       var c = r && r.components && r.components[r.route];
@@ -63,12 +69,23 @@
         var nd = document.getElementById("__NEXT_DATA__");
         pp = nd && JSON.parse(nd.textContent).props.pageProps;
       }
-      if (!pp || pp.pageType !== "PRODUCT") return [];
-      var vs = (pp.pageSpecificData && pp.pageSpecificData.variants) || [];
-      var out = [];
-      vs.forEach(function (v) { if (v.sku && out.indexOf(v.sku) < 0) out.push(v.sku); });
-      return out;
-    } catch (e) { return []; }
+      return pp || null;
+    } catch (e) { return null; }
+  }
+  function getSkus() {
+    var pp = pageProps();
+    var out = [];
+    if (pp && pp.pageType === "PRODUCT") {
+      var psd = pp.pageSpecificData || {};
+      var slug = psd.slug || (psd.metaData && psd.metaData.slug) || "";
+      var ok = !slug || location.pathname.indexOf(slug) > -1;
+      if (ok) (psd.variants || []).forEach(function (v) { if (v.sku && out.indexOf(v.sku) < 0) out.push(v.sku); });
+    }
+    if (!out.length) {
+      var m = (document.body.innerText || "").match(/Ürün Kodu:\s*([A-Za-z0-9_-]+)/);
+      if (m) out.push(m[1]);
+    }
+    return out;
   }
 
   function load(sku) {
@@ -93,10 +110,7 @@
       (imgs ? '<div class="yrv-imgs">' + imgs + '</div>' : "") + '</div>';
   }
 
-  function render(data, anchor) {
-    var old = document.getElementById("yubi-reviews");
-    if (old) old.remove();
-    if (!data || !data.ratings) return;
+  function build(data) {
     var hasText = data.reviews && data.reviews.length > 0;
     css();
     var box = document.createElement("section");
@@ -109,12 +123,12 @@
       (hasText ? '<div class="yrv-grid"></div>' : '');
     var grid = box.querySelector(".yrv-grid");
     var shown = 0;
+    var btn = null;
     function more() {
       grid.insertAdjacentHTML("beforeend", data.reviews.slice(shown, shown + PAGE).map(card).join(""));
       shown += PAGE;
       if (shown >= data.reviews.length && btn) btn.remove();
     }
-    var btn = null;
     if (data.reviews.length > PAGE) {
       btn = document.createElement("button");
       btn.className = "yrv-more";
@@ -124,11 +138,23 @@
       box.appendChild(btn);
     }
     if (hasText) more();
-    place(box, anchor);
+    return box;
   }
 
-  /* Siralama: ... > bizim yorumlar > site yorumlari > iade ve kisisellestirme bilgisi */
-  function place(box, anchor) {
+  function render(data) {
+    var old = document.getElementById("yubi-reviews");
+    if (old) old.remove();
+    if (!data || !data.ratings) return;
+    var box = build(data);
+    /* Serel: ikas ProductReviews bolumunun (section.pr-section) hemen ustune */
+    var pr = document.querySelector("section.pr-section");
+    if (pr) { box.classList.add("yrv-serel"); pr.parentNode.insertBefore(box, pr); return; }
+    /* Siva */
+    var anchor = document.querySelector('[class*="style_productContainer__"]');
+    if (anchor) placeSiva(box, anchor);
+  }
+
+  function placeSiva(box, anchor) {
     var main = document.querySelector("main");
     var kids = main ? [].slice.call(main.children) : [];
     var iade = null, site = null;
@@ -151,9 +177,9 @@
 
   function run(tries) {
     var path = location.pathname;
-    var anchor = document.querySelector('[class*="style_productContainer__"]');
+    var ready = document.querySelector("section.pr-section") || document.querySelector('[class*="style_productContainer__"]');
     var skus = getSkus();
-    if (!anchor || !skus.length) {
+    if (!ready || !skus.length) {
       if ((tries || 0) < 20) setTimeout(function () { if (location.pathname === path) run((tries || 0) + 1); }, 300);
       return;
     }
@@ -168,7 +194,7 @@
         merged.ratings = tot;
         merged.reviews = merged.reviews.concat(d.reviews);
       });
-      render(merged, anchor);
+      render(merged);
     });
   }
 
@@ -189,20 +215,22 @@
       setTimeout(run, 400);
     }
   }
-  /* Sitede hic yorum yoksa "Yorum bulunamadi" bolumunu gizle; yorum gelirse tekrar goster */
+  /* Sitede hic yorum yoksa bos yorum bolumunu gizle; yorum gelirse tekrar goster */
   function syncEmptySiteReviews() {
+    /* Serel */
+    [].forEach.call(document.querySelectorAll("section.pr-section"), function (c) {
+      var empty = !!c.querySelector(".pr-empty") && !c.querySelector(".pr-item, .pr-review, .pr-card");
+      if (empty && !c.hasAttribute("data-yrv-hidden")) { c.setAttribute("data-yrv-hidden", "1"); c.style.display = "none"; }
+      else if (!empty && c.hasAttribute("data-yrv-hidden")) { c.removeAttribute("data-yrv-hidden"); c.style.display = ""; }
+    });
+    /* Siva */
     var main = document.querySelector("main");
     if (!main) return;
     [].forEach.call(main.children, function (c) {
       if (!c.querySelector(".infinite-scroll-component")) return;
       var empty = /^Yorum bulunamad[ıi]\.?$/i.test((c.textContent || "").trim());
-      if (empty && !c.hasAttribute("data-yrv-hidden")) {
-        c.setAttribute("data-yrv-hidden", "1");
-        c.style.display = "none";
-      } else if (!empty && c.hasAttribute("data-yrv-hidden")) {
-        c.removeAttribute("data-yrv-hidden");
-        c.style.display = "";
-      }
+      if (empty && !c.hasAttribute("data-yrv-hidden")) { c.setAttribute("data-yrv-hidden", "1"); c.style.display = "none"; }
+      else if (!empty && c.hasAttribute("data-yrv-hidden")) { c.removeAttribute("data-yrv-hidden"); c.style.display = ""; }
     });
   }
 
