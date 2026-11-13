@@ -113,10 +113,19 @@ def main():
     os.makedirs(IMG_DIR, exist_ok=True)
     pmap = json.load(open(MAP_FILE)) if os.path.exists(MAP_FILE) else {}
 
-    products = list_products()
-    print(f"Trendyol'da {len(products)} urun bulundu")
+    try:
+        products = list_products()
+        print(f"Trendyol'da {len(products)} urun bulundu")
+    except Exception as e:  # noqa
+        print(f"Urun listesi alinamadi ({e}) - kayitli liste kullaniliyor")
+        products = {}
     if len(products) < 50:
-        print("HATA: Urun listesi beklenenden az - Trendyol erisimi engellenmis olabilir.")
+        known = {cid: v.get("slug") for cid, v in pmap.items() if v.get("slug")}
+        print(f"Kayitli listeden {len(known)} urun kullaniliyor")
+        known.update(products)
+        products = known
+    if len(products) < 50:
+        print("HATA: Urun listesi bos - hicbir sey yazilmadi.")
         sys.exit(1)
 
     for cid, slug in products.items():
