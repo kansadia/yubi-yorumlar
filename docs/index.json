@@ -1,122 +1,72 @@
 {
- "updated": "2026-11-13",
+ "updated": "2026-11-16",
  "products": {
-  "33401": {
-   "avg": 5.0,
-   "ratings": 4,
-   "comments": 3
-  },
   "33427": {
    "avg": 4.9,
    "ratings": 10,
    "comments": 8
-  },
-  "9018": {
-   "avg": 4.9,
-   "ratings": 33,
-   "comments": 18
-  },
-  "9002": {
-   "avg": 4.8,
-   "ratings": 53,
-   "comments": 27
   },
   "33367": {
    "avg": 4.8,
    "ratings": 18,
    "comments": 9
   },
-  "33417": {
+  "33330": {
    "avg": 5.0,
-   "ratings": 10,
-   "comments": 5
-  },
-  "9031": {
-   "avg": 4.9,
-   "ratings": 17,
-   "comments": 12
-  },
-  "9035": {
-   "avg": 4.9,
-   "ratings": 18,
-   "comments": 9
-  },
-  "9028": {
-   "avg": 4.8,
-   "ratings": 6,
-   "comments": 4
+   "ratings": 4,
+   "comments": 2
   },
   "33298": {
    "avg": 5.0,
    "ratings": 7,
    "comments": 3
   },
-  "33330": {
+  "33417": {
    "avg": 5.0,
-   "ratings": 4,
-   "comments": 2
-  },
-  "33106": {
-   "avg": 4.8,
-   "ratings": 6,
-   "comments": 1
-  },
-  "9014": {
-   "avg": 5.0,
-   "ratings": 12,
-   "comments": 6
-  },
-  "9017": {
-   "avg": 5.0,
-   "ratings": 2,
-   "comments": 1
-  },
-  "9019": {
-   "avg": 4.8,
-   "ratings": 9,
+   "ratings": 10,
    "comments": 5
   },
-  "9009": {
-   "avg": 4.9,
-   "ratings": 17,
-   "comments": 10
+  "33401": {
+   "avg": 5.0,
+   "ratings": 4,
+   "comments": 3
+  },
+  "33006": {
+   "avg": 5.0,
+   "ratings": 1,
+   "comments": 0
   },
   "33383": {
    "avg": 5.0,
    "ratings": 1,
    "comments": 1
   },
-  "9013": {
+  "33223": {
    "avg": 5.0,
-   "ratings": 12,
-   "comments": 5
+   "ratings": 1,
+   "comments": 1
   },
-  "9022": {
-   "avg": 4.5,
-   "ratings": 11,
-   "comments": 5
-  },
-  "9016": {
+  "33349": {
    "avg": 5.0,
+   "ratings": 1,
+   "comments": 1
+  },
+  "33106": {
+   "avg": 4.8,
    "ratings": 6,
-   "comments": 2
+   "comments": 1
   },
-  "9001": {
-   "avg": 4.9,
-   "ratings": 8,
-   "comments": 2
+  "33003": {
+   "avg": 4.0,
+   "ratings": 1,
+   "comments": 1
   },
-  "9032": {
+  "33007": {
    "avg": 5.0,
    "ratings": 2,
    "comments": 1
   },
-  "9011": {
-   "avg": 5.0,
-   "ratings": 3,
-   "comments": 1
-  },
-  "33006": {
+  "33015": {
    "avg": 5.0,
    "ratings": 1,
    "comments": 0
@@ -126,14 +76,24 @@
    "ratings": 1,
    "comments": 0
   },
-  "9033": {
+  "33094": {
    "avg": 5.0,
-   "ratings": 5,
-   "comments": 3
+   "ratings": 1,
+   "comments": 0
   },
-  "9023": {
+  "10000": {
+   "avg": 4.4,
+   "ratings": 5,
+   "comments": 0
+  },
+  "33139": {
    "avg": 5.0,
-   "ratings": 2,
+   "ratings": 1,
+   "comments": 0
+  },
+  "33154": {
+   "avg": 5.0,
+   "ratings": 1,
    "comments": 0
   },
   "4001": {
@@ -141,49 +101,34 @@
    "ratings": 9,
    "comments": 4
   },
-  "9036": {
-   "avg": 5.0,
-   "ratings": 2,
+  "9001": {
+   "avg": 4.9,
+   "ratings": 8,
    "comments": 2
   },
-  "33349": {
-   "avg": 5.0,
-   "ratings": 1,
-   "comments": 1
+  "9003": {
+   "avg": 4.9,
+   "ratings": 16,
+   "comments": 9
   },
-  "33154": {
-   "avg": 5.0,
-   "ratings": 1,
-   "comments": 0
+  "9002": {
+   "avg": 4.8,
+   "ratings": 52,
+   "comments": 27
   },
-  "9015": {
-   "avg": 4.0,
-   "ratings": 3,
-   "comments": 2
-  },
-  "33223": {
-   "avg": 5.0,
-   "ratings": 1,
-   "comments": 1
+  "9009": {
+   "avg": 4.9,
+   "ratings": 17,
+   "comments": 10
   },
   "9005": {
    "avg": 4.9,
    "ratings": 9,
    "comments": 5
   },
-  "10000": {
-   "avg": 4.4,
-   "ratings": 5,
-   "comments": 0
-  },
-  "33007": {
+  "9011": {
    "avg": 5.0,
-   "ratings": 2,
-   "comments": 1
-  },
-  "9021": {
-   "avg": 5.0,
-   "ratings": 2,
+   "ratings": 3,
    "comments": 1
   },
   "9012": {
@@ -191,45 +136,100 @@
    "ratings": 9,
    "comments": 5
   },
-  "9034": {
+  "9013": {
    "avg": 5.0,
-   "ratings": 1,
-   "comments": 1
+   "ratings": 12,
+   "comments": 5
   },
-  "9030": {
-   "avg": 4.7,
-   "ratings": 3,
-   "comments": 3
+  "9014": {
+   "avg": 5.0,
+   "ratings": 12,
+   "comments": 6
   },
-  "9003": {
+  "9016": {
+   "avg": 5.0,
+   "ratings": 6,
+   "comments": 2
+  },
+  "9018": {
    "avg": 4.9,
-   "ratings": 16,
-   "comments": 9
+   "ratings": 33,
+   "comments": 18
+  },
+  "9017": {
+   "avg": 5.0,
+   "ratings": 2,
+   "comments": 1
   },
   "9020": {
    "avg": 5.0,
    "ratings": 3,
    "comments": 1
   },
-  "33139": {
-   "avg": 5.0,
-   "ratings": 1,
-   "comments": 0
+  "9022": {
+   "avg": 4.5,
+   "ratings": 11,
+   "comments": 5
   },
-  "33094": {
-   "avg": 5.0,
-   "ratings": 1,
-   "comments": 0
-  },
-  "33003": {
+  "9015": {
    "avg": 4.0,
+   "ratings": 3,
+   "comments": 2
+  },
+  "9021": {
+   "avg": 5.0,
+   "ratings": 2,
+   "comments": 1
+  },
+  "9023": {
+   "avg": 5.0,
+   "ratings": 2,
+   "comments": 0
+  },
+  "9030": {
+   "avg": 4.7,
+   "ratings": 3,
+   "comments": 3
+  },
+  "9019": {
+   "avg": 4.8,
+   "ratings": 9,
+   "comments": 5
+  },
+  "9031": {
+   "avg": 4.9,
+   "ratings": 17,
+   "comments": 12
+  },
+  "9032": {
+   "avg": 5.0,
+   "ratings": 3,
+   "comments": 1
+  },
+  "9033": {
+   "avg": 5.0,
+   "ratings": 5,
+   "comments": 3
+  },
+  "9034": {
+   "avg": 5.0,
    "ratings": 1,
    "comments": 1
   },
-  "33015": {
+  "9035": {
+   "avg": 4.9,
+   "ratings": 18,
+   "comments": 9
+  },
+  "9036": {
    "avg": 5.0,
-   "ratings": 1,
-   "comments": 0
+   "ratings": 2,
+   "comments": 2
+  },
+  "9028": {
+   "avg": 4.8,
+   "ratings": 6,
+   "comments": 4
   }
  }
 }
